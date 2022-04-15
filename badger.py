@@ -1,17 +1,13 @@
 #!/usr/bin/python3
 import cups
 import sys
-import os.path
 
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 from aztec_code_generator import AztecCode
 
-#check if the temp directory exists, else create it!
-path = "./badges"
-if not os.path.isdir(path):
-    os.mkdir(path)
+filename="tmpbadge.png"
 
 # Card resolution
 # Pebble3 PPD driver specs 243.84 x 155.52. That is at a standard 72 'point' raster, at 300 dpi
@@ -47,7 +43,6 @@ while True:
     draw.rectangle((0, 520-(height/2),cardwidth,520+(height/2)), fill="white", outline=None)
     draw.text((1016/2,520), nickname, fill="black", anchor="mm", font=font)
 
-    filename=path+"/angelbadge-"+nickname+".png"
     angelbadge.save(filename, "PNG")
 
     pebble = cups.Connection()
