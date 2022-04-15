@@ -1,26 +1,40 @@
 #!/usr/bin/python3
 import cups
 import sys
+import os.path
+
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 from aztec_code_generator import AztecCode
 
+#check if the temp directory exists, else create it!
+path = "./badges"
+if not os.path.isdir(path):
+    os.mkdir(path)
+
+# Card resolution
+# Pebble3 PPD driver specs 243.84 x 155.52. That is at a standard 72 'point' raster, at 300 dpi
+# So 243.84 / 72 * 300 = 1016 horizontal and 155.52 / 72 * 300 = 648 vertical
+# More info: https://en.wikipedia.org/wiki/Point_(typography)
+cardwidth = 1016 
+cardheight = 648
+
 while True:
     nickname = input("Enter nickname: ")
-
-    from aztec_code_generator import AztecCode
+ 
     aztec_code = AztecCode("angel"+nickname,size=23,compact=True)
-    aztec = aztec_code.image(module_size=4, border=0)
+    aztec_code.save('aztec_code.png', module_size=4, border=0)
+    aztec = Image.open('aztec_code.png')
     aztec = aztec.convert('RGBA')
     aztec = aztec.resize((255,255), resample = Image.Dither.NONE)
     aztec = aztec.rotate(60, expand=True,fillcolor=None)
-    
+
     background = Image.open('pasjeachterkant.png')
-    
-    angelbadge = Image.new('RGBA', size=(1016, 648))
+
+    angelbadge = Image.new('RGBA', size=(cardwidth, cardheight))
     angelbadge.paste(background, (0,0))
-    angelbadge.paste(aztec, ((1016-102-250),50),aztec)
+    angelbadge.paste(aztec, ((cardwidth-102-250),50),aztec) #2nd 'aztec' reference is for the mask
     draw = ImageDraw.Draw(angelbadge)
 
     font = ImageFont.truetype("./Saira-Regular.ttf", 150)
@@ -30,14 +44,13 @@ while True:
         font = ImageFont.truetype("./Saira-Regular.ttf", int(150/length*1000))
         length,height=font.getsize(nickname)
 
-    draw.rectangle((0, 520-(height/2),1016,520+(height/2)), fill="white", outline=None)
+    draw.rectangle((0, 520-(height/2),cardwidth,520+(height/2)), fill="white", outline=None)
     draw.text((1016/2,520), nickname, fill="black", anchor="mm", font=font)
 
-    angelbadge.save("badge.png", "PNG")
+    filename=path+"/angelbadge-"+nickname+".png"
+    angelbadge.save(filename, "PNG")
 
-    file = "./badge.png"
-    
     pebble = cups.Connection()
-    #pebble.printFile ("Pebble", file, "angelbadge", {})
-    
-    print("Done!")
+
+    pebble.printFile ("Pebble", filename, "angelbadge for "+nickname, {})
+    print("Sent to printer!")
