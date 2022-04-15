@@ -9,15 +9,15 @@ from aztec_code_generator import AztecCode
 while True:
     nickname = input("Enter nickname: ")
 
+    from aztec_code_generator import AztecCode
     aztec_code = AztecCode("angel"+nickname,size=23,compact=True)
-    aztec_code.save('aztec_code.png', module_size=4, border=0)
-
-    background = Image.open('pasjeachterkant.png')
-    aztec = Image.open('aztec_code.png')
+    aztec = aztec_code.image(module_size=4, border=0)
     aztec = aztec.convert('RGBA')
     aztec = aztec.resize((255,255), resample = Image.Dither.NONE)
     aztec = aztec.rotate(60, expand=True,fillcolor=None)
-
+    
+    background = Image.open('pasjeachterkant.png')
+    
     angelbadge = Image.new('RGBA', size=(1016, 648))
     angelbadge.paste(background, (0,0))
     angelbadge.paste(aztec, ((1016-102-250),50),aztec)
