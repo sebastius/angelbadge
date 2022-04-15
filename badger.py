@@ -1,23 +1,18 @@
 #!/usr/bin/python3
-# Made by Bas Oort (twitter @basoort, github.com/sebastius)
-# Feel free to use this and hack it. 
-
 import cups
-import qrcode
 import sys
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
+from aztec_code_generator import AztecCode
 
 while True:
     nickname = input("Enter nickname: ")
-    print ("gonna print: " + nickname)
 
-    from aztec_code_generator import AztecCode
-    aztec_code = AztecCode("angel"+nickname,size=23,compact=True) #angels get a prefix for Logistics Warehouse
+    aztec_code = AztecCode("angel"+nickname,size=23,compact=True)
     aztec_code.save('aztec_code.png', module_size=4, border=0)
 
-    background = Image.open('background.png') # image size 1016 x 648
+    background = Image.open('pasjeachterkant.png')
     aztec = Image.open('aztec_code.png')
     aztec = aztec.convert('RGBA')
     aztec = aztec.resize((255,255), resample = Image.Dither.NONE)
@@ -40,7 +35,9 @@ while True:
 
     angelbadge.save("badge.png", "PNG")
 
-    pebble = cups.Connection()
     file = "./badge.png"
-    #pebble.printFile ("Pebble", file, "angelbadge", {}) #if you don't want to print a million cards during testing, comment this line
+    
+    pebble = cups.Connection()
+    #pebble.printFile ("Pebble", file, "angelbadge", {})
+    
     print("Done!")
