@@ -5,6 +5,7 @@
 
 import cups
 import sys
+import re
 
 from PIL import Image
 from PIL import ImageFont
@@ -47,7 +48,14 @@ cardwidth = 1016
 cardheight = 648
 
 def createbadge(nickname):
-    # Todo implement nickname validation against maxlenght 24 and [A-Za-z0-9\-_.]
+    # RE is based on the rules for the angel-system and compatible with the warehouse system
+    if not re.match("^[A-Za-z0-9\-_.]+$", nickname):
+        print ("Use up to 24 letters, numbers or connecting punctuations for your nickname.")
+        return
+    if len(nickname)>24:
+        print ("Use up to 24 letters, numbers or connecting punctuations for your nickname.")
+        return
+    
     aztec_code = AztecCode("angel-"+nickname,size=23,compact=True)
     aztec_code.save('aztec_code.png', module_size=4, border=0)
     aztec = Image.open('aztec_code.png')
