@@ -21,6 +21,7 @@ printername="Pebble"
 # Printer options
 # Pleae note you can waste expensive ribbon (or destroy it) if you choose the wrong settings!
 # Below settings are from 'lpoptions -p pebble -l'
+# TODO: verify that this works
 
 ribbontype = "BlackWax" #YMCKO YMCKOS KO Black Blue Gold Green Red Silver White Scratch *BlackWax Hologram
 mediatype = "Feeder" #Feeder Manual Auto
@@ -46,6 +47,7 @@ cardwidth = 1016
 cardheight = 648
 
 def createbadge(nickname):
+    # Todo implement nickname validation against maxlenght 24 and [A-Za-z0-9\-_.]
     aztec_code = AztecCode("angel-"+nickname,size=23,compact=True)
     aztec_code.save('aztec_code.png', module_size=4, border=0)
     aztec = Image.open('aztec_code.png')
