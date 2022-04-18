@@ -72,7 +72,7 @@ def createbadge(nickname):
 
     if length > (cardwidth-16): # if the nickname is too wide in the default font, scale it down
         font = ImageFont.truetype("./Saira-Regular.ttf", int(150/length*1000))
-        length,height=font.getsize(nickname)
+        length,height = font.getsize(nickname)
 
     draw.rectangle((0, 520-(height/2),cardwidth,520+(height/2)), fill="white", outline=None)
     draw.text((cardwidth/2,520), nickname, fill="black", anchor="mm", font=font) # https://pillow.readthedocs.io/en/stable/handbook/text-anchors.html
