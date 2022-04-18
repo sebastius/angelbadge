@@ -13,11 +13,8 @@ from PIL import ImageDraw
 from aztec_code_generator import AztecCode
 #from subprocess import run #only needed if ribbon selection stuff doesn't work in the pycups call, will probably delete this
 
-#temporary filename
-filename="tmpbadge.png"
-
-#printername in Cups
-printername="Pebble"
+filename = "tmpbadge.png" #temporary filename, because PyCups can only print a file, not an object
+printername = "Pebble" #printername in Cups
 
 # Printer options
 # Pleae note you can waste expensive ribbon (or destroy it) if you choose the wrong settings!
@@ -34,7 +31,7 @@ treatmentk = "G" # G L , Gray or LineMode
 sensibilityk = "10" # 0~20 Intensity Black Panel, 10 is default
 overlaypannel = "FO" # FO, SCI, SCA, MS, NO .Define: Full Overlay, SmartCard ISO, SmartCard Afnor, Magnetic Stripe, No Overlay, this is for the coating layer on top of your ink, you don't want to cover a chip with it ;)
 
-printeroptions ={"Collate":"True","InkType":ribbontype,"MediaType":mediatype, "EjectType":ejecttype, "Brightness":brightness, "Contrast":contrast, "BlackIn":blackin, "TreatementK":treatmentk, "SensibilityK":sensibilityk,"OverlayPannel":overlaypannel,"EjectCard":"None","Coercivity":"None"}
+printeroptions = {"Collate":"True","InkType":ribbontype,"MediaType":mediatype, "EjectType":ejecttype, "Brightness":brightness, "Contrast":contrast, "BlackIn":blackin, "TreatementK":treatmentk, "SensibilityK":sensibilityk,"OverlayPannel":overlaypannel,"EjectCard":"None","Coercivity":"None"}
 
 # Card resolution
 # Pebble3 PPD driver specs 243.84 x 155.52. That is at a standard 72 'point' raster, at 300 dpi
@@ -73,12 +70,12 @@ def createbadge(nickname):
     font = ImageFont.truetype("./Saira-Regular.ttf", 150)
     length,height=font.getsize(nickname)
 
-    if length > 1000: # if the nickname is too wide in the default font, scale it down
+    if length > (cardwidth-16): # if the nickname is too wide in the default font, scale it down
         font = ImageFont.truetype("./Saira-Regular.ttf", int(150/length*1000))
         length,height=font.getsize(nickname)
 
     draw.rectangle((0, 520-(height/2),cardwidth,520+(height/2)), fill="white", outline=None)
-    draw.text((1016/2,520), nickname, fill="black", anchor="mm", font=font)
+    draw.text((cardwidth/2,520), nickname, fill="black", anchor="mm", font=font) # https://pillow.readthedocs.io/en/stable/handbook/text-anchors.html
 
     angelbadge.save(filename, "PNG")
 
