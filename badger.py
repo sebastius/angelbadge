@@ -76,11 +76,12 @@ def createbadge(nickname):
     draw.text((cardwidth/2,520), nickname, fill="black", anchor="mm", font=font) # https://pillow.readthedocs.io/en/stable/handbook/text-anchors.html
 
     angelbadge.save(filename, "PNG")
-
-    pebble = cups.Connection()
-
-    pebble.printFile (printername, filename, "angelbadge for "+nickname, printeroptions)
-    print("Sent angelbadge for "+nickname+" to "+printername+"!")
+    try:
+        pebble = cups.Connection()
+        pebble.printFile (printername, filename, "angelbadge for "+nickname, printeroptions)
+        print("Sent angelbadge for "+nickname+" to "+printername+"!")
+    except Exception as e:
+        print("printer error: "+str(e))
 
 if len(sys.argv)>1: #print all passed arguments as angel badges
     print("Hi! Gonna hit you up with some nice cards!")
