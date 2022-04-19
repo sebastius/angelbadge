@@ -58,7 +58,7 @@ def createbadge(nickname):
     aztec = aztec.resize((255,255), resample = Image.Dither.NONE)
     aztec = aztec.rotate(60, expand=True,fillcolor=None)
 
-    background = Image.open('pasjeachterkant.png')
+    background = Image.open('background.png')
 
     angelbadge = Image.new('RGBA', size=(cardwidth, cardheight))
     angelbadge.paste(background, (0,0))
