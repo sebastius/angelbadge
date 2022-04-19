@@ -3,14 +3,15 @@
 
 # either start it with no arguments and get a prompt, or pass as many nicknames as you want through the arguments
 
-import cups
+import cups #printer connection https://pypi.org/project/pycups/
 import sys
 import re
 
-from PIL import Image
+from PIL import Image # https://python-pillow.org/
 from PIL import ImageFont
 from PIL import ImageDraw
-from aztec_code_generator import AztecCode
+
+from aztec_code_generator import AztecCode # https://github.com/delimitry/aztec_code_generator
 
 filename = "tmpbadge.png" #temporary filename, because PyCups can only print a file, not an object
 printername = "Pebble" #printername in Cups
@@ -43,7 +44,7 @@ cardwidth = 1016
 cardheight = 648
 
 def createbadge(nickname):
-    # RE is based on the rules for the angel-system and compatible with the warehouse system
+    # RegularExpression is based on the rules for the angel-system and compatible with the warehouse system
     if not re.match("^[A-Za-z0-9\-_.]+$", nickname):
         print ("Use up to 24 letters, numbers or connecting punctuations for your nickname.")
         return
@@ -76,7 +77,8 @@ def createbadge(nickname):
     draw.text((cardwidth/2,520), nickname, fill="black", anchor="mm", font=font) # https://pillow.readthedocs.io/en/stable/handbook/text-anchors.html
 
     angelbadge.save(filename, "PNG")
-    try:
+
+try:
         pebble = cups.Connection()
         pebble.printFile (printername, filename, "angelbadge for "+nickname, printeroptions)
         print("Sent angelbadge for "+nickname+" to "+printername+"!")
