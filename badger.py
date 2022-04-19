@@ -11,7 +11,6 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 from aztec_code_generator import AztecCode
-#from subprocess import run #only needed if ribbon selection stuff doesn't work in the pycups call, will probably delete this
 
 filename = "tmpbadge.png" #temporary filename, because PyCups can only print a file, not an object
 printername = "Pebble" #printername in Cups
@@ -19,7 +18,6 @@ printername = "Pebble" #printername in Cups
 # Printer options
 # Pleae note you can waste expensive ribbon (or destroy it) if you choose the wrong settings!
 # Below settings are from 'lpoptions -p pebble -l'
-# TODO: verify that this works
 
 ribbontype = "BlackWax" #YMCKO YMCKOS KO Black Blue Gold Green Red Silver White Scratch *BlackWax Hologram
 mediatype = "Feeder" #Feeder Manual Auto
@@ -78,9 +76,6 @@ def createbadge(nickname):
     draw.text((cardwidth/2,520), nickname, fill="black", anchor="mm", font=font) # https://pillow.readthedocs.io/en/stable/handbook/text-anchors.html
 
     angelbadge.save(filename, "PNG")
-
-    #run(['lpoptions','-p', printername, '-o', 'InkType='+ribbontype]) 
-    # only needed if the Inktype option below doesn't work.
 
     pebble = cups.Connection()
 
