@@ -10,6 +10,18 @@ if [ ! -d mch2021designgenerator/node_modules ]; then
   popd
 fi
 
-mch2021designgenerator/cli.mjs -s ./mch2021designgenerator/listen.sock >/dev/null &
-python3 badger.py
+SOCK=./mch2021designgenerator/listen.sock
+
+if [ -e $SOCK ]; then
+  rm $SOCK;
+fi
+
+mch2021designgenerator/cli.mjs -s $SOCK >/dev/null &
+
+# Await the socket
+while [ ! -S $SOCK ]; do
+  sleep 0.1
+done
+
+python3 badger.py $@
 kill %1
