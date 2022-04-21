@@ -9,7 +9,7 @@ if [ ! -d mch2021designgenerator/node_modules ]; then
   popd
 fi
 
-SOCK=./mch2021designgenerator/listen.sock
+SOCK=$(pwd)/mch2021designgenerator/listen.sock
 
 if [ -e $SOCK ]; then
   rm $SOCK;
