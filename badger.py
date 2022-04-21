@@ -13,6 +13,9 @@ from PIL import ImageDraw
 
 from aztec_code_generator import AztecCode # https://github.com/delimitry/aztec_code_generator
 
+from subprocess import run
+import cairosvg
+
 filename = "tmpbadge.png" #temporary filename, because PyCups can only print a file, not an object
 printername = "Pebble" #printername in Cups
 
@@ -59,10 +62,13 @@ def createbadge(nickname):
     aztec = aztec.resize((255,255), resample = Image.Dither.NONE)
     aztec = aztec.rotate(60, expand=True,fillcolor=None)
 
+    run(['./mch2021designgenerator/cli.mjs','-b', '-w'+str(cardwidth),'-t'+str(cardheight),'-n'+nickname,'-orenderedbackground.svg'])
+    cairosvg.svg2png(url="./background.svg", write_to="renderedbackground.png")
+
     background = Image.open('background.png')
 
-    angelbadge = Image.new('RGBA', size=(cardwidth, cardheight))
-    angelbadge.paste(background, (0,0))
+    angelbadge = Image.new('RGBA', size=(cardwidth, cardheight), color='black')
+    angelbadge.paste(background, (0,0),background)
     angelbadge.paste(aztec, ((cardwidth-102-250),50),aztec) #2nd 'aztec' reference is for the mask
     draw = ImageDraw.Draw(angelbadge)
 
@@ -78,7 +84,7 @@ def createbadge(nickname):
 
     angelbadge.save(filename, "PNG")
 
-try:
+    try:
         pebble = cups.Connection()
         pebble.printFile (printername, filename, "angelbadge for "+nickname, printeroptions)
         print("Sent angelbadge for "+nickname+" to "+printername+"!")
