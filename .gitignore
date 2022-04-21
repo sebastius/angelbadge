@@ -1,4 +1,7 @@
-# Byte-compiled / optimized / DLL files
+# tmp files from project
+tmpbadge.png
+
+## Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class

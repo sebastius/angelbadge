@@ -6,6 +6,7 @@
 import cups #printer connection https://pypi.org/project/pycups/
 import sys
 import re
+import os
 
 from PIL import Image # https://python-pillow.org/
 from PIL import ImageFont
@@ -90,6 +91,9 @@ def createbadge(nickname):
         print("Sent angelbadge for "+nickname+" to "+printername+"!")
     except Exception as e:
         print("printer error: "+str(e))
+    os.remove("aztec_code.png")
+    os.remove("renderedbackground.png")
+    os.remove("renderedbackground.svg")
 
 if len(sys.argv)>1: #print all passed arguments as angel badges
     print("Hi! Gonna hit you up with some nice cards!")
