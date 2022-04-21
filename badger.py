@@ -2,6 +2,7 @@
 # This script is designed specifically for the Evolis Pebble 3 and New Pebble printers (and tested).
 
 # either start it with no arguments and get a prompt, or pass as many nicknames as you want through the arguments
+import io
 
 import cups #printer connection https://pypi.org/project/pycups/
 import sys
@@ -64,7 +65,7 @@ def createbadge(nickname):
     if len(nickname)>24:
         print ("Use up to 24 letters, numbers or connecting punctuations for your nickname.")
         return
-    
+
     aztec_code = AztecCode("angel-"+nickname,size=23,compact=True)
     aztec_code.save('aztec_code.png', module_size=4, border=0)
     aztec = Image.open('aztec_code.png')
@@ -72,8 +73,18 @@ def createbadge(nickname):
     aztec = aztec.resize((255,255), resample = Image.Dither.NONE)
     aztec = aztec.rotate(60, expand=True,fillcolor=None)
 
-    cairosvg.svg2png(bytestring=request({'name': nickname})['data'], write_to="renderedbackground.png")
-    background = Image.open('renderedbackground.png')
+    data = request({
+        'name': nickname,
+        'width': cardwidth,
+        'height': cardheight,
+        'black': True,
+        'remove_text': True,
+        'geometry_x': 1.25,
+        'geometry_y': 0.249,
+        'close': True,
+    })['data']
+    png = cairosvg.svg2png(bytestring=data)
+    background = Image.open(io.BytesIO(png))
 
     angelbadge = Image.new('RGBA', size=(cardwidth, cardheight), color='black')
     angelbadge.paste(background, (0,0),background)
@@ -98,12 +109,10 @@ def createbadge(nickname):
     except Exception as e:
         print("printer error: "+str(e))
     os.remove("aztec_code.png")
-    os.remove("renderedbackground.png")
 
 if len(sys.argv)>1: #print all passed arguments as angel badges
     print("Hi! Gonna hit you up with some nice cards!")
-    del sys.argv[0]
-    for nicks in sys.argv:
+    for nicks in sys.argv[1:]:
         createbadge(nicks)
 else: #give a nice prompt
     while True:
