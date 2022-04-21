@@ -72,14 +72,7 @@ def createbadge(nickname):
     aztec = aztec.resize((255,255), resample = Image.Dither.NONE)
     aztec = aztec.rotate(60, expand=True,fillcolor=None)
 
-    # run(['./mch2021designgenerator/cli.mjs', '-b','-w'+str(cardwidth),'-t'+str(cardheight),'-n'+nickname,'-orenderedbackground.svg'])
-    
-    # print(request({'name': nickname})['data'])
-
-    # echo '{"name":"asdadad","close":true}'| nc -U ./listen.sock | jq -r '.data' > data.svg
-
     cairosvg.svg2png(bytestring=request({'name': nickname})['data'], write_to="renderedbackground.png")
-
     background = Image.open('renderedbackground.png')
 
     angelbadge = Image.new('RGBA', size=(cardwidth, cardheight), color='black')
@@ -96,7 +89,6 @@ def createbadge(nickname):
 
     draw.rectangle((0, 520-(height/2),cardwidth,520+(height/2)), fill="white", outline=None)
     draw.text((cardwidth/2,520), nickname, fill="black", anchor="mm", font=font) # https://pillow.readthedocs.io/en/stable/handbook/text-anchors.html
-
     angelbadge.save(filename, "PNG")
 
     try:
