@@ -1,0 +1,15 @@
+/* https://bootstrap-vue.org/docs/reference/theming */
+
+// https://www.bootstrapdash.com/bootstrap-css-styles/
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+$theme-colors: (
+    success: rgba(67, 181, 160, 1),
+    primary: rgba(67, 181, 160, 1),
+);
+
+$link-color:                 #491d88ff;
+$link-hover-color:           #fa448cff;
+
+@import 'bootstrap/scss/bootstrap.scss';
+@import 'bootstrap-vue/src/index.scss';
