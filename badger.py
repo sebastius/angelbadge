@@ -7,7 +7,6 @@ import io
 import cups #printer connection https://pypi.org/project/pycups/
 import sys
 import re
-import os
 import socket
 import json
 
@@ -17,7 +16,6 @@ from PIL import ImageDraw
 
 from aztec_code_generator import AztecCode # https://github.com/delimitry/aztec_code_generator
 
-from subprocess import run
 import cairosvg
 
 filename = "tmpbadge.png" #temporary filename, because PyCups can only print a file, not an object
@@ -50,12 +48,14 @@ printeroptions = {"Collate":"True","InkType":ribbontype,"MediaType":mediatype, "
 cardwidth = 1016
 cardheight = 648
 
+
 def request(data):
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
         sock.connect('./mch2021designgenerator/listen.sock')
         fp = sock.makefile()
         sock.send(str.encode(json.dumps(data) + '\n'))
         return json.loads(fp.readline())
+
 
 def createbadge(nickname):
     # RegularExpression is based on the rules for the angel-system and compatible with the warehouse system
@@ -66,9 +66,10 @@ def createbadge(nickname):
         print ("Use up to 24 letters, numbers or connecting punctuations for your nickname.")
         return
 
+    aztec_data = io.BytesIO()
     aztec_code = AztecCode("angel-"+nickname,size=23,compact=True)
-    aztec_code.save('aztec_code.png', module_size=4, border=0)
-    aztec = Image.open('aztec_code.png')
+    aztec_code.save(aztec_data, module_size=4, border=0, format='PNG')
+    aztec = Image.open(aztec_data)
     aztec = aztec.convert('RGBA')
     aztec = aztec.resize((255,255), resample = Image.Dither.NONE)
     aztec = aztec.rotate(60, expand=True,fillcolor=None)
@@ -82,8 +83,13 @@ def createbadge(nickname):
         'geometry_x': 1.25,
         'geometry_y': 0.249,
         'close': True,
-    })['data']
-    png = cairosvg.svg2png(bytestring=data)
+    })
+
+    if not data['success']:
+        print('Template generation failed: %s' % data.msg)
+        return
+
+    png = cairosvg.svg2png(bytestring=data['data'])
     background = Image.open(io.BytesIO(png))
 
     angelbadge = Image.new('RGBA', size=(cardwidth, cardheight), color='black')
@@ -108,7 +114,6 @@ def createbadge(nickname):
         print("Sent angelbadge for "+nickname+" to "+printername+"!")
     except Exception as e:
         print("printer error: "+str(e))
-    os.remove("aztec_code.png")
 
 if len(sys.argv)>1: #print all passed arguments as angel badges
     print("Hi! Gonna hit you up with some nice cards!")
