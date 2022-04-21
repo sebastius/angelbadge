@@ -94,7 +94,7 @@ def createbadge(nickname):
 
     angelbadge = Image.new('RGBA', size=(cardwidth, cardheight), color='black')
     angelbadge.paste(background, (0,0),background)
-    angelbadge.paste(aztec, ((cardwidth-102-250),50),aztec) #2nd 'aztec' reference is for the mask
+    angelbadge.paste(aztec, ((cardwidth-102-260),50),aztec) #2nd 'aztec' reference is for the mask
     draw = ImageDraw.Draw(angelbadge)
 
     font = ImageFont.truetype("./Saira-Regular.ttf", 150)
