@@ -11,4 +11,4 @@ Code: see license.txt (basically i don't care what you do with my code)
 
 ![plaatje](/example.png)
 
-
+Repo contains a hacked version of the MCH2022 design generator, find original here: https://gitlab.com/stitch1/mch2021designgenerator , am too uninterested to do it properly with forks and submodules and whatnot.
