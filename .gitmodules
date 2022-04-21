@@ -1,0 +1,3 @@
+[submodule "mch2021designgenerator"]
+	path = mch2021designgenerator
+	url = https://gitlab.com/stitch1/mch2021designgenerator.git
