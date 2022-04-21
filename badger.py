@@ -63,9 +63,9 @@ def createbadge(nickname):
     aztec = aztec.rotate(60, expand=True,fillcolor=None)
 
     run(['./mch2021designgenerator/cli.mjs','-b', '-w'+str(cardwidth),'-t'+str(cardheight),'-n'+nickname,'-orenderedbackground.svg'])
-    cairosvg.svg2png(url="./background.svg", write_to="renderedbackground.png")
+    cairosvg.svg2png(url="./renderedbackground.svg", write_to="renderedbackground.png")
 
-    background = Image.open('background.png')
+    background = Image.open('renderedbackground.png')
 
     angelbadge = Image.new('RGBA', size=(cardwidth, cardheight), color='black')
     angelbadge.paste(background, (0,0),background)
