@@ -7,6 +7,8 @@ import cups #printer connection https://pypi.org/project/pycups/
 import sys
 import re
 import os
+import socket
+import json
 
 from PIL import Image # https://python-pillow.org/
 from PIL import ImageFont
@@ -47,6 +49,13 @@ printeroptions = {"Collate":"True","InkType":ribbontype,"MediaType":mediatype, "
 cardwidth = 1016
 cardheight = 648
 
+def request(data):
+    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
+        sock.connect('./mch2021designgenerator/listen.sock')
+        fp = sock.makefile()
+        sock.send(str.encode(json.dumps(data) + '\n'))
+        return json.loads(fp.readline())
+
 def createbadge(nickname):
     # RegularExpression is based on the rules for the angel-system and compatible with the warehouse system
     if not re.match("^[A-Za-z0-9\-_.]+$", nickname):
@@ -63,8 +72,13 @@ def createbadge(nickname):
     aztec = aztec.resize((255,255), resample = Image.Dither.NONE)
     aztec = aztec.rotate(60, expand=True,fillcolor=None)
 
-    run(['./mch2021designgenerator/cli.mjs','-b', '-w'+str(cardwidth),'-t'+str(cardheight),'-n'+nickname,'-orenderedbackground.svg'])
-    cairosvg.svg2png(url="./renderedbackground.svg", write_to="renderedbackground.png")
+    # run(['./mch2021designgenerator/cli.mjs', '-b','-w'+str(cardwidth),'-t'+str(cardheight),'-n'+nickname,'-orenderedbackground.svg'])
+    
+    # print(request({'name': nickname})['data'])
+
+    # echo '{"name":"asdadad","close":true}'| nc -U ./listen.sock | jq -r '.data' > data.svg
+
+    cairosvg.svg2png(bytestring=request({'name': nickname})['data'], write_to="renderedbackground.png")
 
     background = Image.open('renderedbackground.png')
 
@@ -93,7 +107,6 @@ def createbadge(nickname):
         print("printer error: "+str(e))
     os.remove("aztec_code.png")
     os.remove("renderedbackground.png")
-    os.remove("renderedbackground.svg")
 
 if len(sys.argv)>1: #print all passed arguments as angel badges
     print("Hi! Gonna hit you up with some nice cards!")
