@@ -36,6 +36,7 @@ pip install -r requirements.txt
 
 cd evolis_pebble_driver
 sudo dpkg -i blabla.deb
+
 Install printer
 
 ### Go time
