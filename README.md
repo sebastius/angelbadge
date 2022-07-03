@@ -12,3 +12,28 @@ Code: see license.txt (basically i don't care what you do with my code)
 ![plaatje](/example.png)
 
 Repo contains a hacked version of the MCH2022 design generator, find original here: https://gitlab.com/stitch1/mch2021designgenerator , am too uninterested to do it properly with forks and submodules and whatnot.
+
+## Basis install notes
+sudo apt update && sudo apt upgrade
+
+NodeJS installeren:
+
+# Using Ubuntu
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Using Debian, as root
+curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+apt-get install -y nodejs
+
+sudo apt install git vim python3-pip
+
+git clone https://github.com/sebastius/angelbadge.git
+cd angelbadge
+git submodule update —init
+pip install -r requirements.txt
+
+cd evolis_pebble_driver
+sudo dpkg -i blabla.deb
+
+./start.sh
